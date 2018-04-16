@@ -1,5 +1,5 @@
 'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.Type = undefined;var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);var _createClass2 = require('babel-runtime/helpers/createClass');var _createClass3 = _interopRequireDefault(_createClass2);var _ethereumjsUtil = require('ethereumjs-util');var _ethereumjsUtil2 = _interopRequireDefault(_ethereumjsUtil);
-var _bignumber = require('bignumber.js');var _bignumber2 = _interopRequireDefault(_bignumber);
+var _querystring = require('querystring');var _querystring2 = _interopRequireDefault(_querystring);
 var _signer = require('./signer');var _signer2 = _interopRequireDefault(_signer);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 var Type = exports.Type = {
@@ -49,13 +49,13 @@ Receipt = function () {
       payload.writeUInt8(0, 0);
       // <16 bytes investor uuid>
       if (investorId instanceof Buffer) {
-        payload.copy(investorId, 1);
+        investorId.copy(payload, 1);
       } else {
         payload.write(investorId.replace(/-/g, ''), 1, 'hex');
       }
       // <8 bytes first half of merchant uuid>
       if (merchantId instanceof Buffer) {
-        payload.copy(merchantId, 17);
+        merchantId.copy(payload, 17);
       } else {
         payload.write(merchantId.replace(/-/g, ''), 17, 'hex');
       }
@@ -94,7 +94,7 @@ Receipt = function () {
       payload.writeUInt8(0, 0);
       // <8 bytes merchantId>
       if (this.targetAddr instanceof Buffer) {
-        payload.copy(this.targetAddr, 8);
+        this.targetAddr.copy(payload, 8);
       } else {
         payload.write(this.targetAddr.replace(/-/g, ''), 8, 'hex');
       }
@@ -214,4 +214,24 @@ Receipt = function () {
         parts: partBufs,
         signer: '0x' + signer.toString('hex') };
 
+    } }, { key: 'isEscaped', value: function isEscaped(
+
+    receiptStr) {
+      return receiptStr.indexOf('%3D') > -1;
+    } }, { key: 'maybeUnescape', value: function maybeUnescape(
+
+    receiptStr) {
+      if (Receipt.isEscaped(receiptStr)) {
+        return _querystring2.default.unescape(receiptStr);
+      }
+
+      return receiptStr;
+    } }, { key: 'maybeEscape', value: function maybeEscape(
+
+    receiptStr) {
+      if (!Receipt.isEscaped(receiptStr)) {
+        return _querystring2.default.escape(receiptStr);
+      }
+
+      return receiptStr;
     } }]);return Receipt;}();exports.default = Receipt;
