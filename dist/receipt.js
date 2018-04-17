@@ -11,29 +11,26 @@ var Type = exports.Type = {
 
 /**
                  * A receipt should authenticate the signer to a contract function
-                 * a receipt should transport a destination address, ideally a nonce
-                 * and shall fit into few multiple of bytes32
                  */var
 Receipt = function () {
   function Receipt(targetAddr) {(0, _classCallCheck3.default)(this, Receipt);
     this.targetAddr = targetAddr;
   }
 
-  // leave create a leave receipt
-  // a leave receipts is signed by the oracle to exit a player from the table
-  // at a specific handId.
-  // when the leave receipt is accepted in the contract, the exitHand of the player
-  // is set to the handId provider in the receipt
-  // and a nettingRequest is created at handId
-  (0, _createClass3.default)(Receipt, [{ key: 'whitelist', value: function whitelist() {for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {args[_key] = arguments[_key];}var
-      investorAddr = args[0];
+  /**
+    * whitelist receipts authenticates an investor to the sale contract
+    */(0, _createClass3.default)(Receipt, [{ key: 'whitelist', value: function whitelist()
+    {for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {args[_key] = arguments[_key];}var
+      investorAddr = args[0],_args$ = args[1],created = _args$ === undefined ? Date.now() : _args$;
       // make leave receipt
       // size: 32bytes receipt
       var payload = Buffer.alloc(32);
       // <1 bytes 0x00 space for v>
       payload.writeUInt8(0, 0);
-      // <11 bytes targetAddr>
-      payload.write(this.targetAddr.replace('0x', '').substring(18, 40), 1, 'hex');
+      // <7 bytes targetAddr>
+      payload.write(this.targetAddr.replace('0x', '').substring(22, 40), 1, 'hex');
+      // <4 bytes created timestamp>
+      payload.writeUInt32BE(created, 8);
       // <20 bytes investorAddr>
       payload.write(investorAddr.replace('0x', ''), 12, 'hex');
       return new _signer2.default(args, [payload], Type.WHITELIST);
@@ -43,7 +40,7 @@ Receipt = function () {
       * created for user and delivered via magic-link
       */ }, { key: 'session', value: function session()
     {for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {args[_key2] = arguments[_key2];} // eslint-disable-line class-methods-use-this
-      var investorId = args[0],merchantId = args[1],_args$ = args[2],created = _args$ === undefined ? Math.floor(Date.now() / 1000) : _args$;
+      var investorId = args[0],merchantId = args[1],_args$2 = args[2],created = _args$2 === undefined ? Math.floor(Date.now() / 1000) : _args$2;
       var payload = Buffer.alloc(32, 0);
       // <1 bytes 0x00 space for v>
       payload.writeUInt8(0, 0);
@@ -69,7 +66,7 @@ Receipt = function () {
     } }, { key: 'message', value: function message()
 
     {for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {args[_key3] = arguments[_key3];}var
-      msg = args[0],_args$2 = args[1],created = _args$2 === undefined ? Date.now() : _args$2;
+      msg = args[0],_args$3 = args[1],created = _args$3 === undefined ? Date.now() : _args$3;
       var msgLength = Buffer.byteLength(msg, 'utf8');
       // make message receipt
       // 1b 0x00 space for v
@@ -125,6 +122,7 @@ Receipt = function () {
       switch (bufs.type) {
         case Type.WHITELIST:{
             rv.investorAddr = '0x' + bufs.parts[2].slice(12, 32).toString('hex');
+            rv.created = bufs.parts[2].readUInt32BE(8);
             break;
           }
         case Type.SESSION:{
