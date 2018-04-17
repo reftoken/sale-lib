@@ -1,4 +1,5 @@
-'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.Type = undefined;var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);var _createClass2 = require('babel-runtime/helpers/createClass');var _createClass3 = _interopRequireDefault(_createClass2);var _ethereumjsUtil = require('ethereumjs-util');var _ethereumjsUtil2 = _interopRequireDefault(_ethereumjsUtil);
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.Type = undefined;var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);var _createClass2 = require('babel-runtime/helpers/createClass');var _createClass3 = _interopRequireDefault(_createClass2);var _assert = require('assert');var _assert2 = _interopRequireDefault(_assert);
+var _ethereumjsUtil = require('ethereumjs-util');var _ethereumjsUtil2 = _interopRequireDefault(_ethereumjsUtil);
 var _querystring = require('querystring');var _querystring2 = _interopRequireDefault(_querystring);
 var _signer = require('./signer');var _signer2 = _interopRequireDefault(_signer);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
@@ -21,7 +22,8 @@ Receipt = function () {
     * whitelist receipts authenticates an investor to the sale contract
     */(0, _createClass3.default)(Receipt, [{ key: 'whitelist', value: function whitelist()
     {for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {args[_key] = arguments[_key];}var
-      investorAddr = args[0],_args$ = args[1],created = _args$ === undefined ? Date.now() : _args$;
+      investorAddr = args[0],_args$ = args[1],created = _args$ === undefined ? Math.floor(Date.now() / 1000) : _args$;
+      (0, _assert2.default)(created >>> 0 === created, 'created has to be in secronds'); // eslint-disable-line no-bitwise
       // make leave receipt
       // size: 32bytes receipt
       var payload = Buffer.alloc(32);
