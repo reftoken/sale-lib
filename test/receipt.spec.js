@@ -1,8 +1,5 @@
-import chai, { expect } from 'chai';
-import sinonChai from 'sinon-chai';
-import Receipt, { Type } from './receipt';
-
-chai.use(sinonChai);
+import { expect } from 'chai';
+import Receipt, { Type } from '../lib/receipt';
 
 const PRIV = '0x94890218f2b0d04296f30aeafd13655eba4c5bbf1770273276fee52cbe3f2cb4';
 const ADDR = '0x82e8c6cf42c8d1ff9594b17a3f50e94a12cc860f';
@@ -27,6 +24,7 @@ describe('receipt + signer ', () => {
     });
     done();
   });
+
   it('should fail if miliseconds provided for created.', (done) => {
     const saleAddr = '0x00112233445566778899aabbccddeeff00112233';
     const investorAddr = '0x2222222222222222222222222222222222222222';
@@ -37,6 +35,7 @@ describe('receipt + signer ', () => {
     }
     throw new Error('should have thrown');
   });
+
   it('should allow to sign and parse session receipt.', (done) => {
     const sessionReceipt = 'CIYP.BUj1DVxVn/giqS30O+gPdZ8U1Xmwmzi8l6Y1x0Hdark=.bxGXdffLYN6nyyUxbqoEOgYi9mQbd/JA0iTX59UpKrQ=.HBF8UqmkWUpvntIgtxOh7NCvMe9qs6hNalj5n9EAAAA=';
     const created = 1492754385;
@@ -57,6 +56,7 @@ describe('receipt + signer ', () => {
     expect(session.shortId()).to.eql('9xRuHU7');
     done();
   });
+
   it('should allow to sign and parse investment receipt.', (done) => {
     const investReceipt = 'AoYP.n2/6jTR4n11r7lmkYYWZOk3EC5vtWh//IgEJJq+GzDw=.entfhjjnE+sYIFoGaOc/0wgpt86CUn8tRlqbpV3TvN0=.HN3u/wARIjNEVWZ3IiIiIiIiIiIiIiIiIiIiIiIiIiI=.WPmf0QAA1VaXywLSMzMzMzMzMzMzMzMzMzMzMzMzMzM=';
     const saleAddr = '0x00112233445566778899aabbccddeeff00112233';
@@ -83,6 +83,7 @@ describe('receipt + signer ', () => {
     });
     done();
   });
+
   it('should allow to get short Id.', (done) => {
     const investorId = '117c52a9-a459-4a6f-9ed2-20b713a1ecd0';
     const merchantId = 'af31ef6a-b3a8-4d6a';
@@ -91,6 +92,7 @@ describe('receipt + signer ', () => {
     expect(session.shortId()).to.eql('9xRuHU7');
     done();
   });
+
   it('should allow to sign and parse message receipt.', (done) => {
     const messageReceipt = 'KYYP.r0ciB80ze2ZDYqQMPAuB1ML5E90Sk67COKMr27Ycs8E=.cDaKjZsdWxiwWbBTzNfho0ePAXDUps3IpsNh8Mk48ps=.HAABW48YSGivMe9qs6hNagAAAAAAAAAAAAAAAAAAAAc=.bWVzc2FnZQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=';
     const created = 1492754385000;
