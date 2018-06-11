@@ -5,14 +5,16 @@ var _signer = require('./signer');var _signer2 = _interopRequireDefault(_signer)
 
 var Type = exports.Type = {
   WHITELIST: 1,
+  INVEST: 2,
   SESSION: 8,
   MESSAGE: 41 };
 
+var MAX_UINT32 = 0xFFFFFFFF;
 
 
 /**
-                 * A receipt should authenticate the signer to a contract function
-                 */var
+                             * A receipt should authenticate the signer to a contract function
+                             */var
 Receipt = function () {
   function Receipt(targetAddr) {(0, _classCallCheck3.default)(this, Receipt);
     this.targetAddr = targetAddr;
@@ -39,9 +41,33 @@ Receipt = function () {
     }
 
     /**
+      * investment receipts defines a payment for a deal contract
+      */ }, { key: 'investment', value: function investment()
+    {for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {args[_key2] = arguments[_key2];}var
+      investorAddr = args[0],affiliateAddr = args[1],oobpa = args[2];
+      var payload1 = Buffer.alloc(32);
+      // <1 bytes 0x00 space for v>
+      payload1.writeUInt8(0, 0);
+      // <13 bytes targetAddr>
+      payload1.write(this.targetAddr.replace('0x', '').substring(16, 40), 1, 'hex');
+      // <20 bytes investorAddr>
+      payload1.write(investorAddr.replace('0x', ''), 12, 'hex');
+
+      var payload2 = Buffer.alloc(32);
+      // write oobpa
+      var big = ~~(oobpa / MAX_UINT32); // eslint-disable-line no-bitwise
+      var low = oobpa % MAX_UINT32 - big;
+      payload2.writeUInt32BE(big, 4);
+      payload2.writeUInt32BE(low, 8);
+      // <20 bytes affiliateAddr>
+      payload2.write(affiliateAddr.replace('0x', ''), 12, 'hex');
+      return new _signer2.default(args, [payload1, payload2], Type.INVEST);
+    }
+
+    /**
       * created for user and delivered via magic-link
       */ }, { key: 'session', value: function session()
-    {for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {args[_key2] = arguments[_key2];} // eslint-disable-line class-methods-use-this
+    {for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {args[_key3] = arguments[_key3];} // eslint-disable-line class-methods-use-this
       var investorId = args[0],merchantId = args[1],_args$2 = args[2],created = _args$2 === undefined ? Math.floor(Date.now() / 1000) : _args$2;
       var payload = Buffer.alloc(32, 0);
       // <1 bytes 0x00 space for v>
@@ -67,7 +93,7 @@ Receipt = function () {
       return new _signer2.default(args, [payload], Type.SESSION);
     } }, { key: 'message', value: function message()
 
-    {for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {args[_key3] = arguments[_key3];}var
+    {for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {args[_key4] = arguments[_key4];}var
       msg = args[0],_args$3 = args[1],created = _args$3 === undefined ? Date.now() : _args$3;
       var msgLength = Buffer.byteLength(msg, 'utf8');
       // make message receipt
@@ -84,7 +110,6 @@ Receipt = function () {
       var sliceCount = Math.floor(msgLength / 32) + 2;
       var payload = Buffer.alloc(sliceCount * 32);
       // write timestamp to buffer
-      var MAX_UINT32 = 0xFFFFFFFF;
       var big = ~~(created / MAX_UINT32); // eslint-disable-line no-bitwise
       var low = created % MAX_UINT32 - big;
       payload.writeUInt32BE(big, 0);
@@ -125,6 +150,12 @@ Receipt = function () {
         case Type.WHITELIST:{
             rv.investorAddr = '0x' + bufs.parts[2].slice(12, 32).toString('hex');
             rv.created = bufs.parts[2].readUInt32BE(8);
+            break;
+          }
+        case Type.INVEST:{
+            rv.investorAddr = '0x' + bufs.parts[2].slice(12, 32).toString('hex');
+            rv.affiliateAddr = '0x' + bufs.parts[3].slice(12, 32).toString('hex');
+            rv.oobpa = parseInt(bufs.parts[3].slice(4, 12).toString('hex'), 16);
             break;
           }
         case Type.SESSION:{
@@ -184,6 +215,15 @@ Receipt = function () {
             hash = _ethereumjsUtil2.default.sha3(first);
             first.writeUInt8(v, 0);
             partBufs.push(first);
+            break;
+          }
+        case Type.INVEST:{
+            var second = Buffer.alloc(32);
+            second.write(parts[4], 'base64');
+            hash = _ethereumjsUtil2.default.sha3(Buffer.concat([first, second]));
+            first.writeUInt8(v, 0);
+            partBufs.push(first);
+            partBufs.push(second);
             break;
           }
         case Type.MESSAGE:{

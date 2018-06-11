@@ -1,15 +1,21 @@
-'use strict';Object.defineProperty(exports, "__esModule", { value: true });var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);var _createClass2 = require('babel-runtime/helpers/createClass');var _createClass3 = _interopRequireDefault(_createClass2);var _ethereumjsUtil = require('ethereumjs-util');var _ethereumjsUtil2 = _interopRequireDefault(_ethereumjsUtil);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var
+'use strict';Object.defineProperty(exports, "__esModule", { value: true });var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);var _createClass2 = require('babel-runtime/helpers/createClass');var _createClass3 = _interopRequireDefault(_createClass2);var _ethereumjsUtil = require('ethereumjs-util');var _ethereumjsUtil2 = _interopRequireDefault(_ethereumjsUtil);
+var _base = require('base-58');var _base2 = _interopRequireDefault(_base);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var
 
 Signer = function () {
   function Signer(values, payload, type) {(0, _classCallCheck3.default)(this, Signer);
     this.values = values;
     this.payload = payload;
     this.type = type;
-  }(0, _createClass3.default)(Signer, [{ key: 'signToBuf', value: function signToBuf(
+  }(0, _createClass3.default)(Signer, [{ key: 'shortId', value: function shortId()
+
+    {
+      var hash = _ethereumjsUtil2.default.sha3(this.payload[0].slice(1, 25));
+      return _base2.default.encode(hash).substring(0, 7);
+    } }, { key: 'signToBuf', value: function signToBuf(
 
     privKey) {
       // build head
-      var privBuf = new Buffer(privKey.replace('0x', ''), 'hex');
+      var privBuf = Buffer.from(privKey.replace('0x', ''), 'hex');
       var addr = _ethereumjsUtil2.default.privateToAddress(privBuf);
       var headBuf = Buffer.alloc(3);
       headBuf.writeInt8(this.type, 0);

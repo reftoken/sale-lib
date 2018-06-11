@@ -1,6 +1,6 @@
 {
   "name": "rt-sale-lib",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "receipt implementation",
   "main": "dist/index.js",
   "keywords": [
@@ -58,6 +58,7 @@
     "utf8": "^2.1.2"
   },
   "dependencies": {
+    "base-58": "0.0.1",
     "bignumber.js": "^4.0.2",
     "es6-promise": "^4.1.0",
     "ethereumjs-util": "^4.5.0",
