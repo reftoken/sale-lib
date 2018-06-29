@@ -48,8 +48,8 @@ Receipt = function () {
       var payload1 = Buffer.alloc(32);
       // <1 bytes 0x00 space for v>
       payload1.writeUInt8(0, 0);
-      // <13 bytes targetAddr>
-      payload1.write(this.targetAddr.replace('0x', '').substring(16, 40), 1, 'hex');
+      // <11 bytes targetAddr>
+      payload1.write(this.targetAddr.replace('0x', '').substring(18, 40), 1, 'hex');
       // <20 bytes investorAddr>
       payload1.write(investorAddr.replace('0x', ''), 12, 'hex');
 
@@ -153,6 +153,7 @@ Receipt = function () {
             break;
           }
         case Type.INVEST:{
+            rv.targetAddr = '0x' + bufs.parts[2].slice(1, 12).toString('hex');
             rv.investorAddr = '0x' + bufs.parts[2].slice(12, 32).toString('hex');
             rv.affiliateAddr = '0x' + bufs.parts[3].slice(12, 32).toString('hex');
             rv.oobpa = parseInt(bufs.parts[3].slice(4, 12).toString('hex'), 16);
