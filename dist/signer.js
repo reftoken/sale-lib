@@ -1,5 +1,5 @@
 'use strict';Object.defineProperty(exports, "__esModule", { value: true });var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);var _createClass2 = require('babel-runtime/helpers/createClass');var _createClass3 = _interopRequireDefault(_createClass2);var _ethereumjsUtil = require('ethereumjs-util');var _ethereumjsUtil2 = _interopRequireDefault(_ethereumjsUtil);
-var _base = require('base-58');var _base2 = _interopRequireDefault(_base);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var
+var _util = require('./util');function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var
 
 Signer = function () {
   function Signer(values, payload, type) {(0, _classCallCheck3.default)(this, Signer);
@@ -9,8 +9,7 @@ Signer = function () {
   }(0, _createClass3.default)(Signer, [{ key: 'shortId', value: function shortId()
 
     {
-      var hash = _ethereumjsUtil2.default.sha3(this.payload[0].slice(1, 25));
-      return _base2.default.encode(hash).substring(0, 7);
+      return (0, _util.generateShortId)(this.payload[0].slice(1, 17), this.payload[0].slice(17, 25));
     } }, { key: 'signToBuf', value: function signToBuf(
 
     privKey) {
