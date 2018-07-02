@@ -44,7 +44,8 @@ Receipt = function () {
       * investment receipts defines a payment for a deal contract
       */ }, { key: 'investment', value: function investment()
     {for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {args[_key2] = arguments[_key2];}var
-      investorAddr = args[0],affiliateAddr = args[1],oobpa = args[2];
+      investorAddr = args[0],affiliateAddr = args[1],oobpa = args[2],_args$2 = args[3],created = _args$2 === undefined ? Math.floor(Date.now() / 1000) : _args$2;
+      (0, _assert2.default)(created >>> 0 === created, 'created has to be in secronds'); // eslint-disable-line no-bitwise
       var payload1 = Buffer.alloc(32);
       // <1 bytes 0x00 space for v>
       payload1.writeUInt8(0, 0);
@@ -54,6 +55,8 @@ Receipt = function () {
       payload1.write(investorAddr.replace('0x', ''), 12, 'hex');
 
       var payload2 = Buffer.alloc(32);
+      // <4 bytes created timestamp>
+      payload2.writeUInt32BE(created, 0);
       // write oobpa
       var big = ~~(oobpa / MAX_UINT32); // eslint-disable-line no-bitwise
       var low = oobpa % MAX_UINT32 - big;
@@ -68,7 +71,7 @@ Receipt = function () {
       * created for user and delivered via magic-link
       */ }, { key: 'session', value: function session()
     {for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {args[_key3] = arguments[_key3];} // eslint-disable-line class-methods-use-this
-      var investorId = args[0],merchantId = args[1],_args$2 = args[2],created = _args$2 === undefined ? Math.floor(Date.now() / 1000) : _args$2;
+      var investorId = args[0],merchantId = args[1],_args$3 = args[2],created = _args$3 === undefined ? Math.floor(Date.now() / 1000) : _args$3;
       var payload = Buffer.alloc(32, 0);
       // <1 bytes 0x00 space for v>
       payload.writeUInt8(0, 0);
@@ -94,7 +97,7 @@ Receipt = function () {
     } }, { key: 'message', value: function message()
 
     {for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {args[_key4] = arguments[_key4];}var
-      msg = args[0],_args$3 = args[1],created = _args$3 === undefined ? Date.now() : _args$3;
+      msg = args[0],_args$4 = args[1],created = _args$4 === undefined ? Date.now() : _args$4;
       var msgLength = Buffer.byteLength(msg, 'utf8');
       // make message receipt
       // 1b 0x00 space for v
