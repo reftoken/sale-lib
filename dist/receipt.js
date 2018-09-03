@@ -44,13 +44,15 @@ Receipt = function () {
       * investment receipts defines a payment for a deal contract
       */ }, { key: 'investment', value: function investment()
     {for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {args[_key2] = arguments[_key2];}var
-      investorAddr = args[0],affiliateAddr = args[1],oobpa = args[2],_args$2 = args[3],created = _args$2 === undefined ? Math.floor(Date.now() / 1000) : _args$2;
+      investorAddr = args[0],affiliateAddr = args[1],oobpa = args[2],orderId = args[3],_args$2 = args[4],created = _args$2 === undefined ? Math.floor(Date.now() / 1000) : _args$2;
       (0, _assert2.default)(created >>> 0 === created, 'created has to be in secronds'); // eslint-disable-line no-bitwise
       var payload1 = Buffer.alloc(32);
       // <1 bytes 0x00 space for v>
       payload1.writeUInt8(0, 0);
-      // <11 bytes targetAddr>
-      payload1.write(this.targetAddr.replace('0x', '').substring(18, 40), 1, 'hex');
+      // <7 bytes targetAddr>
+      payload1.write(this.targetAddr.replace('0x', '').substring(26, 40), 1, 'hex');
+      // <4 bytes orderId>
+      payload1.write(orderId.replace('0x', ''), 8, 'hex');
       // <20 bytes investorAddr>
       payload1.write(investorAddr.replace('0x', ''), 12, 'hex');
 
@@ -156,7 +158,8 @@ Receipt = function () {
             break;
           }
         case Type.INVEST:{
-            rv.targetAddr = '0x' + bufs.parts[2].slice(1, 12).toString('hex');
+            rv.targetAddr = '0x' + bufs.parts[2].slice(1, 8).toString('hex');
+            rv.orderId = '0x' + bufs.parts[2].slice(8, 12).toString('hex');
             rv.investorAddr = '0x' + bufs.parts[2].slice(12, 32).toString('hex');
             rv.affiliateAddr = '0x' + bufs.parts[3].slice(12, 32).toString('hex');
             rv.oobpa = parseInt(bufs.parts[3].slice(4, 12).toString('hex'), 16);
