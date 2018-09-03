@@ -33,7 +33,10 @@ var generateShortId = function generateShortId(investorId, merchantId) {
     * @returns {Buffer}
     */
 var uuidToBin = function uuidToBin(key) {
-  return typeof key === 'string' ? new Buffer(key.replace(/-/g, ''), 'hex') : key;
+  if (typeof key === 'string') {
+    return new Buffer(key.replace(/-/g, ''), 'hex');
+  }
+  return key;
 };
 
 /**

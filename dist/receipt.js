@@ -44,7 +44,8 @@ Receipt = function () {
       * investment receipts defines a payment for a deal contract
       */ }, { key: 'investment', value: function investment()
     {for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {args[_key2] = arguments[_key2];}var
-      investorAddr = args[0],affiliateAddr = args[1],oobpa = args[2],orderId = args[3],_args$2 = args[4],created = _args$2 === undefined ? Math.floor(Date.now() / 1000) : _args$2;
+      investorAddr =
+      args[0],affiliateAddr = args[1],oobpa = args[2],orderId = args[3],_args$2 = args[4],created = _args$2 === undefined ? Math.floor(Date.now() / 1000) : _args$2;
       (0, _assert2.default)(created >>> 0 === created, 'created has to be in secronds'); // eslint-disable-line no-bitwise
       var payload1 = Buffer.alloc(32);
       // <1 bytes 0x00 space for v>
