@@ -45,7 +45,7 @@ Receipt = function () {
       */ }, { key: 'investment', value: function investment()
     {for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {args[_key2] = arguments[_key2];}var
       investorAddr =
-      args[0],affiliateAddr = args[1],oobpa = args[2],_args$2 = args[3],orderId = _args$2 === undefined ? '00000000' : _args$2,_args$3 = args[4],created = _args$3 === undefined ? Math.floor(Date.now() / 1000) : _args$3;
+      args[0],affiliateIndex = args[1],oobpa = args[2],_args$2 = args[3],orderId = _args$2 === undefined ? '00000000' : _args$2,_args$3 = args[4],created = _args$3 === undefined ? Math.floor(Date.now() / 1000) : _args$3;
       (0, _assert2.default)(created >>> 0 === created, 'created has to be in secronds'); // eslint-disable-line no-bitwise
       var payload1 = Buffer.alloc(32);
       // <1 bytes 0x00 space for v>
@@ -65,8 +65,8 @@ Receipt = function () {
       var low = oobpa % MAX_UINT32 - big;
       payload2.writeUInt32BE(big, 4);
       payload2.writeUInt32BE(low, 8);
-      // <20 bytes affiliateAddr>
-      payload2.write(affiliateAddr.replace('0x', ''), 12, 'hex');
+      // <4 bytes affiliateIndex>
+	  payload2.writeUInt32BE(affiliateIndex, 12);
       return new _signer2.default(args, [payload1, payload2], Type.INVEST);
     }
 
