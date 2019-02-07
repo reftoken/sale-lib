@@ -1,6 +1,6 @@
 {
   "name": "rt-sale-lib",
-  "version": "0.2.2",
+  "version": "1.0.1",
   "description": "receipt implementation",
   "main": "dist/index.js",
   "keywords": [
